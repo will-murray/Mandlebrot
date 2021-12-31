@@ -14,9 +14,9 @@ class Complex:
         radicand = self.real **2 +self.img**2
         return math.sqrt(radicand)
 
+    #(a+bi)(a+bi) = a^2 + 2abi - b^2
     def square(self):
         result = Complex(0,0)
-        #(a+bi)(a+bi) = a^2 + 2abi - b^2
         result.real = self.real**2 - self.img**2
         result.img = 2*self.real*self.img
         return result
