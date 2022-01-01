@@ -3,7 +3,7 @@ from graphics import *
 from Complex import *
 
 class ComplexSeq:
-    def __init__(self,c,frame_size,span):
+    def __init__(self,c,frame_size,span,origon):
         self.points = []    #point sequence
         self.lines = []     #line sequence
         self.c = c          #Complex parameter
@@ -12,6 +12,7 @@ class ComplexSeq:
 
         self.frame_size = frame_size
         self.span = span
+        self.origon = origon
 
         self.node_list = []
 
@@ -43,8 +44,8 @@ class ComplexSeq:
         
         if z.magnitude() > 2:
             col = self.get_color(iteration)
-            if col != "white":
-                print(f"col = {col}, z = {z}")
+            # if col != "white":
+            #     print(f"col = {col}, z = {z}")
             return (False, col)
         elif iteration >31:
             
@@ -63,8 +64,8 @@ class ComplexSeq:
         result = []
         idx = 0
         while(idx<len(self.points)-1):
-            p1 = complex_to_px(self.points[idx],self.frame_size,self.span)
-            p2 = complex_to_px(self.points[idx+1],self.frame_size,self.span)
+            p1 = complex_to_px(self.points[idx],self.frame_size,self.span,self.origon)
+            p2 = complex_to_px(self.points[idx+1],self.frame_size,self.span,self.origon)
             result.append(Line(p1,p2))
             idx+=1
         self.l_seq = result
@@ -95,31 +96,41 @@ class ComplexSeq:
             return "red"
         elif iter > 15:
             return "orange"
-        elif iter > 10:
-            return "yellow"
-        elif iter > 8:
-            return "green"
-        elif iter > 6:
-            return "purple"
-        elif iter > 4:
-            return "turquoise"
+        # elif iter > 10:
+        #     return "yellow"
+        # elif iter > 8:
+        #     return "green"
+        # elif iter > 6:
+        #     return "purple"
         else:
             return "white"
 
     
     
 
-def complex_to_px(comp,frame_size,span):
+def complex_to_px(comp,frame_size,span,origon):
+    std_real = comp.real - origon[0]
+    std_img = comp.img - origon[1]
+    i = (frame_size/2) + (std_real * (frame_size/span/2))
+    j = (frame_size/2) - (std_img * (frame_size/span/2))
+    return Point(i,j)
+
+def px_to_complex(point,frame_size,span,origon):
+    i = point.getX()
+    j = point.getY()
+    
+    real = 2* (span/frame_size) * (i - (frame_size/2))
+    real += origon[0]
+    img =  2* (span/frame_size) * ((frame_size/2) - j)
+    img += origon[1]
+    
+    return Complex(real,img)
+
+def nonstandard_complex_to_px(comp,frame_size,span,origon):
+    
     i = (frame_size/2) + (comp.real * (frame_size/span/2))
     j = (frame_size/2) - (comp.img * (frame_size/span/2))
     return Point(i,j)
-
-def px_to_complex(point,frame_size,span):
-    i = point.getX()
-    j = point.getY()
-    real = 2* (span/frame_size) * (i - (frame_size/2))
-    img =  2* (span/frame_size) * ((frame_size/2) - j)
-    return Complex(real,img)
 
 
 
