@@ -1,30 +1,29 @@
 
 from graphics import *
 from Complex import *
-size = 600
 
 class ComplexSeq:
-    def __init__(self,c):
+    def __init__(self,c,frame_size,span):
         self.points = []    #point sequence
         self.lines = []     #line sequence
         self.c = c          #Complex parameter
-        self.in_set = False 
+        self.in_set = False
+        
+
+        self.frame_size = frame_size
+        self.span = span
 
         self.node_list = []
-
 
         
         self.__init_point_seq(Complex(0,0),0)
         self.__init_line_sequence()
-        #the 2 instance methods used above are private and only called in this fns
+        
         self.len = len(self.points)
 
-    #-----------------------------------------------
-    #this is where the majic happens! #See https://en.wikipedia.org/wiki/Mandelbrot_set
 
-    #function iterates a Complex number 'z' through the function f(z) = z^2 +c
-    #for each iteration, the new value is appended to the 'points' list
-    
+
+    #this is where the majic happens!
     def __init_point_seq(self, z, iteration):
         
         if z.magnitude() > 10: #diverge to infinity
@@ -43,11 +42,13 @@ class ComplexSeq:
     def in_julia_set(self,z, iteration):
         
         if z.magnitude() > 2:
-            
-            return False#self.get_color(iteration)
+            col = self.get_color(iteration)
+            if col != "white":
+                print(f"col = {col}, z = {z}")
+            return (False, col)
         elif iteration >31:
             
-            return True#self.get_color(iteration)
+            return (True,"black")
             
         else:
 
@@ -62,8 +63,8 @@ class ComplexSeq:
         result = []
         idx = 0
         while(idx<len(self.points)-1):
-            p1 = get_pixel_repr(self.points[idx],size)
-            p2 = get_pixel_repr(self.points[idx+1],size)
+            p1 = complex_to_px(self.points[idx],self.frame_size,self.span)
+            p2 = complex_to_px(self.points[idx+1],self.frame_size,self.span)
             result.append(Line(p1,p2))
             idx+=1
         self.l_seq = result
@@ -74,7 +75,7 @@ class ComplexSeq:
             line.draw(win)
             c1 = Circle(line.getP1(),node_radius)
             c1.draw(win)
-            
+            time.sleep(0.2)
             self.node_list.append(c1)
             
             
@@ -86,7 +87,7 @@ class ComplexSeq:
             node.undraw()
 
     def get_color(self, iter):
-        if self.len > 30:
+        if iter > 30:
             return "white"
         elif iter > 25:
             return "grey"
@@ -98,38 +99,28 @@ class ComplexSeq:
             return "yellow"
         elif iter > 8:
             return "green"
-        elif iter > 5:
+        elif iter > 6:
             return "purple"
+        elif iter > 4:
+            return "turquoise"
         else:
             return "white"
 
     
     
 
+def complex_to_px(comp,frame_size,span):
+    i = (frame_size/2) + (comp.real * (frame_size/span/2))
+    j = (frame_size/2) - (comp.img * (frame_size/span/2))
+    return Point(i,j)
 
-#given a point 'p' with pixel coordinates
-#return the complex number equivalent
-def get_complex_repr(p,size):
-    real = p.x/(size/2) - 1
-    img = 1- p.y/(size/2)
-    
+def px_to_complex(point,frame_size,span):
+    i = point.getX()
+    j = point.getY()
+    real = 2* (span/frame_size) * (i - (frame_size/2))
+    img =  2* (span/frame_size) * ((frame_size/2) - j)
     return Complex(real,img)
 
 
-#given a complex number 'c' return 
-#the pixel coordinate equivalent
-def get_pixel_repr(c,size):
-    real = size/2 + c.real*(size/2)
-    img = size/2 - c.img*(size/2)
-    return Point(real,img)
-    
 
-
-def main():
-
-    seq = ComplexSeq(Complex(0,0))
-    c = seq.in_julia_set(Complex(1,0),0)
-    print(c)
-    
-main()
 

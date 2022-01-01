@@ -24,13 +24,9 @@ class Complex:
     def plus(self, other):
         self.real += other.real
         self.img += other.img
-
-    def equals(self,other):
-        if self.real == other.real and self.img == other.img:
-            return True
-    def __repr__(self):
-        str = (f"{self.real} + {self.img}i")
-        return str
         
-    
-
+    def __repr__(self):
+        real = "{:.2f}".format(self.real)
+        img = "{:.2f}".format(self.img)
+        str = (f"{real} + {img}i")
+        return str
