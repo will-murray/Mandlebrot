@@ -6,8 +6,8 @@ This program can:
   4. renders the filled Julia set at some point which the user clicks on.
 
 v3 notes:
-   - mandlebrot.py functionality transferred to Display.py, which implements the MandlebrotWindow ADT. This new ADT makes the render more adjustable
+   - mandlebrot.py functionality transferred to Display.py, which implements the MandlebrotWindow ADT. This new ADT makes the render more size adjustable
    - MandlebrotWindow takes window size as a parameter, sets the width and height of GraphWin ADT
    - MandlebrotWindow takes span as a parameter, span sets the render distance from origon
-          ex. span = 2 -> render all c in Complex such that c.real in [-2,2] and c.img in [-2,-2]. 
+          ex. span = 2 -> render all c in Complex such that c.real in [-2,2] and c.img in [2,-2]. 
    - Julia set is now colored, return type for ComplexSeq.in_julia_set changed from bool to (bool, color)
